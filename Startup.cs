@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 
 namespace BooklistBackend
 {
@@ -29,13 +30,31 @@ namespace BooklistBackend
         {
             var connection = Configuration.GetConnectionString("booklistConnection");
             services.AddDbContext<BookContext>(options => options.UseSqlServer(connection));
-        
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BooklistBackend", Version = "v1" });
+            });
             services.AddControllers();
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(builder => builder
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .SetIsOriginAllowed((host) => true)
+               .AllowCredentials()
+           );
+            app.UseSwagger();
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My first API V1");
+                c.RoutePrefix = string.Empty; // launch swagger from root
+            });
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

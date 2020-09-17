@@ -10,5 +10,7 @@
     <WebStackScaffolding_LayoutPageFile />
     <WebStackScaffolding_DbContextTypeFullName>BookList.Data.BookContext</WebStackScaffolding_DbContextTypeFullName>
     <WebStackScaffolding_IsAsyncSelected>False</WebStackScaffolding_IsAsyncSelected>
+    <NameOfLastUsedPublishProfile>BookListBackend - Web Deploy</NameOfLastUsedPublishProfile>
+    <WebStackScaffolding_DbContextDialogWidth>600</WebStackScaffolding_DbContextDialogWidth>
   </PropertyGroup>
 </Project>

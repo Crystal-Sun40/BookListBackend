@@ -32,5 +32,8 @@ namespace BookList.Data
             // contains the has the connection string as the value
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("booklistConnection"));
         }
+
+        // configure the database to be used by this context
+        public DbSet<BookList.Models.BookComments> BookComments { get; set; }
     }
 }

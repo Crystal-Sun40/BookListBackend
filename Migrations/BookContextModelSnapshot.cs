@@ -26,17 +26,51 @@ namespace BooklistBackend.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("bookAuthor")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("bookImage")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("bookTitle")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("bookId");
 
                     b.ToTable("Book");
+                });
+
+            modelBuilder.Entity("BookList.Models.BookComments", b =>
+                {
+                    b.Property<int>("commentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("bookId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("comments")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("user")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("commentId");
+
+                    b.HasIndex("bookId");
+
+                    b.ToTable("BookComments");
+                });
+
+            modelBuilder.Entity("BookList.Models.BookComments", b =>
+                {
+                    b.HasOne("BookList.Models.Book", null)
+                        .WithMany("comments")
+                        .HasForeignKey("bookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

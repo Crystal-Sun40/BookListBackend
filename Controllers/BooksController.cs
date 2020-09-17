@@ -25,14 +25,15 @@ namespace BooklistBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Book>>> GetBook()
         {
-            return await _context.Book.ToListAsync();
+            return await _context.Book.Include(s => s.comments).ToListAsync();
         }
 
         // GET: api/Books/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Book>> GetBook(int id)
         {
-            var book = await _context.Book.FindAsync(id);
+            //var book = await _context.Book.FindAsync(id);
+            var book = await _context.Book.Include(s => s.comments).FirstOrDefaultAsync(i => i.bookId == id);
 
             if (book == null)
             {
@@ -59,7 +60,7 @@ namespace BooklistBackend.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException e)
             {
                 if (!BookExists(id))
                 {
@@ -67,7 +68,7 @@ namespace BooklistBackend.Controllers
                 }
                 else
                 {
-                    throw;
+                    throw(e);
                 }
             }
 
@@ -85,6 +86,32 @@ namespace BooklistBackend.Controllers
 
             return CreatedAtAction("GetBook", new { id = book.bookId }, book);
         }
+
+        
+        // PUT
+        //[HttpPost("{bookId}/{commentId}/UpdateBookComments")]
+        //public async Task<ActionResult> UpdateCommentsForBooks(int bookId,int commentId, BookComments updateBookComments)
+        //{
+        //    if (bookId != updateBookComments.bookId || commentId!= updateBookComments.commentId)
+        //    {
+        //        return BadRequest();
+        //    }
+        //    var existingBook = _context.Book.Where(s => s.bookId == bookId).Include(s => s.comments).SingleOrDefault();
+        //    if (existingBook != null)
+        //    {
+        //        var existingBookComment = existingBook.comments.Where(add => add.commentId == updateBookComments.commentId).SingleOrDefault();
+        //        if(existingBookComment != null)
+        //        {
+        //            _context.Entry(existingBookComment).CurrentValues.SetValues(updateBookComments);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return NotFound("Book ID does not exist");
+        //    }
+        //    return Ok();
+        //}
 
         // DELETE: api/Books/5
         [HttpDelete("{id}")]
